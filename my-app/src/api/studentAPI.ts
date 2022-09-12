@@ -1,26 +1,27 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-const axiosClient =  axios.create({
-    baseURL:"https://js-post-api.herokuapp.com/api",
-    headers:{
-        'content-type':'application/json'
-    }
-});
-axiosClient.interceptors.request.use(function (config: AxiosRequestConfig) {
-    // Do something before request is sent
-    return config;
-  }, function (error) {
-    // Do something with request error
-    return Promise.reject(error);
-  });
+import {Student} from '../models/student';
+import {ListParams, ListResponse} from '../models/common'
+import axiosClient from "./apiClient";
 
-// Add a response interceptor
-axiosClient.interceptors.response.use(function (response: AxiosResponse) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response.data;
-  }, function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    return Promise.reject(error);
-  });
-export default axiosClient;
+const studentAPI = {
+    getAll(params: ListParams) : Promise<ListResponse<Student>>{
+         const url ="/students"
+        return axiosClient.get(url,{params});
+    },
+    getByID(id: string) : Promise<ListResponse<Student>>{
+      const url =`/students/${id}`
+     return axiosClient.get(url);
+   },
+    add(params: Student) : Promise<Student>{
+      const url ="/students"
+     return axiosClient.post(url,{params});
+    },
+    update(data: Student) : Promise<Student>{
+      const url ="/students"
+     return axiosClient.patch(url,data);
+    },    
+    remove(id: string) : Promise<any>{
+      const url =`/students/${id}`
+     return axiosClient.delete(url);
+    },    
+};
+export default studentAPI;
